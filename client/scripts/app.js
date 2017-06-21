@@ -12,7 +12,10 @@ var app = {
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
 
   init: function(){
-    return
+    $('#main .username').on('click', function(e){
+        app.handleUsernameClick();
+    });
+    return;
   },
   send: function(message){
     $.ajax({
@@ -58,7 +61,7 @@ var app = {
                     <span>${message.roomname}</span>
                   </div>`;
     $('#chats').append(element);
-    $('#main').append(`<button onclick="app.handleUsernameClick()" class="username">${message.username}</button>`);
+    $('#main').append(`<button class="username">${message.username}</button>`);
   },
   renderRoom: function(roomname){
     var element = `<div>
@@ -67,9 +70,15 @@ var app = {
     $('#roomSelect').append(element);
   },
   handleUsernameClick: function(){
-    return
+    return;
   },
   handleSubmit: function(){
-    console.log('triggered handleSubmit')
+    console.log('triggered handleSubmit');
   }
-}
+};
+
+$( document ).ready(function() {
+  $('#send .submit').on('submit', function(e){
+      app.handleSubmit();
+  });
+});
