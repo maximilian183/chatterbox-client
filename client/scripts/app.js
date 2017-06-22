@@ -7,15 +7,40 @@
 //   roomname: '4chan'
 // };
 
+$(document).ready(function(){
+  $('#send .submit').on('submit', function(e){
+    app.handleSubmit();
+  });
+
+  app.init();
+
+  $('#roomSelect select').on('change', function(e){
+    if (this.value === 'Pick a room'){
+      app.clearMessages();
+    }else{
+      app.renderRoomMessages(this.value);
+    }
+  });
+});
+
+window.data = null;
+window.username = window.location.search.replace('?username=', '');
+
 var app = {
-
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
-
   init: function(){
-    $('#main .username').on('click', function(e){
-        app.handleUsernameClick();
-    });
-    return;
+    // fetch data from server
+    app.fetch();
+  },
+  processing: function(){
+    //Get all the Room names in drop down
+    var roomnamesObject = {};
+    for(let obj of window.data.results){
+      roomnamesObject[obj.roomname] = true;
+    }
+    for(let i of Object.keys(roomnamesObject)){
+      app.renderRoom(i);
+    }
   },
   send: function(message){
     $.ajax({
@@ -42,8 +67,8 @@ var app = {
       data: JSON,
       contentType: 'application/json',
       success: function (data) {
-        // console.table(data.results);
-        console.log(data);
+        window.data = data;
+        app.processing();
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -54,22 +79,48 @@ var app = {
   clearMessages: function(){
     $('#chats').html('');
   },
-  renderMessage: function(message){
-    var element = `<div>
-                    <span>${message.username}</span>
-                    <span>${message.text}</span>
-                    <span>${message.roomname}</span>
+  renderMessage: function(message, who){
+    var element = `<div class="chat ${who}">
+                    <a href=# onclick="app.handleUsernameClick()" class="username ${who}">${message.username}</a>
+                    <span class="talk-bubble round ${who}">${message.text}</span>
                   </div>`;
     $('#chats').append(element);
-    $('#main').append(`<button class="username">${message.username}</button>`);
   },
   renderRoom: function(roomname){
-    var element = `<div>
-                    <span>${roomname}</span>
-                  </div>`;
-    $('#roomSelect').append(element);
+    var element = `<option value="${roomname}">
+                    ${roomname}
+                  </option>`;
+    $('#roomSelect select').append(element);
+  },
+  renderRoomMessages: function(roomname){
+    var count = 0;
+    app.clearMessages();
+    for(let obj of window.data.results){
+      if( obj.roomname === roomname ) {
+        if ( obj.username !== undefined && app.NOT_TROLL(obj)){
+          if(obj.username === window.username){
+            app.renderMessage(obj);
+            count++;
+          }else{
+            app.renderMessage(obj, 'others');
+            count++;
+          }
+        }
+      }
+    }
+    console.log(count);
+    if (count === 0){
+      $('#chats').append("<div>Start a Conversation!</div>");
+    }
+  },
+  NOT_TROLL: function(obj){
+    if (obj.text.indexOf('<script>') > -1){
+      return false;
+    }
+    return true;
   },
   handleUsernameClick: function(){
+    console.log('triggered handleUsernameClick');
     return;
   },
   handleSubmit: function(){
@@ -77,8 +128,4 @@ var app = {
   }
 };
 
-$( document ).ready(function() {
-  $('#send .submit').on('submit', function(e){
-      app.handleSubmit();
-  });
-});
+//
