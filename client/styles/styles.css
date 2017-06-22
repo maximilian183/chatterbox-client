@@ -15,6 +15,10 @@ body {
     border-width: 0 1px 1px 1px;
 }
 
+#chats{
+    position: absolute;
+}
+
 #main h1 {
     margin-top: 0;
     font-size: 35px;
@@ -65,8 +69,13 @@ form input[type=text] {
     background-color: #eee;
 }
 
+.others {
+    float:right;
+}
+
 .chat .username {
     font-weight: 800;
+    margin: 0px 20px;
 }
 
 .chat:hover {
@@ -88,3 +97,16 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.talk-bubble {
+    padding: 5px;
+    display: inline-block;
+    position: relative;
+    width: 200px;
+    height: auto;
+    background-color: lightblue;
+}
+.round{
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+}
