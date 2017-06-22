@@ -7,12 +7,18 @@
 //   roomname: '4chan'
 // };
 
+$(document).ready(function(){
+  $('#send .submit').on('submit', function(e){
+    app.handleSubmit();
+  })
+});
+
 var app = {
 
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
 
   init: function(){
-    return
+
   },
   send: function(message){
     $.ajax({
@@ -67,9 +73,9 @@ var app = {
     $('#roomSelect').append(element);
   },
   handleUsernameClick: function(){
-    return
+    return;
   },
   handleSubmit: function(){
-    console.log('triggered handleSubmit')
+    console.log('triggered handleSubmit');
   }
-}
+};
