@@ -10,15 +10,34 @@
 $(document).ready(function(){
   $('#send .submit').on('submit', function(e){
     app.handleSubmit();
-  })
+  });
+
+  app.init();
 });
 
+window.data = null;
 var app = {
 
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
 
   init: function(){
+    // fetch data from server
+    app.fetch();
+      console.log(window.data);
+  },
+  chatRooms:[],
+  processing: function(){
+      // create empty array
+      var roomnamesObject = {};
+      // loop through result array
+      for(let obj of window.data.results){
+        // push list of room name into empty array
+        roomnamesObject[obj.roomname] = true;
+      }
 
+      for(let i of Object.keys(roomnamesObject)){
+        app.renderRoom(i);
+      }
   },
   send: function(message){
     $.ajax({
@@ -47,6 +66,9 @@ var app = {
       success: function (data) {
         // console.table(data.results);
         console.log(data);
+        window.data = data;
+        console.log(this)
+        app.processing();
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -67,10 +89,10 @@ var app = {
     $('#main').append(`<button onclick="app.handleUsernameClick()" class="username">${message.username}</button>`);
   },
   renderRoom: function(roomname){
-    var element = `<div>
-                    <span>${roomname}</span>
-                  </div>`;
-    $('#roomSelect').append(element);
+    var element = `<option value="${roomname}">
+                    ${roomname}
+                  </option>`;
+    $('#roomSelect select').append(element);
   },
   handleUsernameClick: function(){
     return;
@@ -79,3 +101,5 @@ var app = {
     console.log('triggered handleSubmit');
   }
 };
+
+//
