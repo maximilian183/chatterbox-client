@@ -20,10 +20,12 @@ $(document).ready(function(){
     }else{
       app.renderRoomMessages(this.value);
     }
+    window.currentRoomname = this.value;
   });
 });
 
 window.data = null;
+window.currentRoomname = null;
 window.username = window.location.search.replace('?username=', '');
 
 var app = {
@@ -69,6 +71,8 @@ var app = {
       success: function (data) {
         window.data = data;
         app.processing();
+        console.log(data);
+        console.log(data.length);
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -84,7 +88,7 @@ var app = {
                     <a href=# onclick="app.handleUsernameClick()" class="username ${who}">${message.username}</a>
                     <span class="talk-bubble round ${who}">${message.text}</span>
                   </div>`;
-    $('#chats').append(element);
+    $('#chats').prepend(element);
   },
   renderRoom: function(roomname){
     var element = `<option value="${roomname}">
@@ -97,7 +101,7 @@ var app = {
     app.clearMessages();
     for(let obj of window.data.results){
       if( obj.roomname === roomname ) {
-        if ( obj.username !== undefined && app.NOT_TROLL(obj)){
+        if ( obj.username !== undefined && obj.text.length > 0 && app.NOT_TROLL(obj)){
           if(obj.username === window.username){
             app.renderMessage(obj);
             count++;
@@ -108,13 +112,15 @@ var app = {
         }
       }
     }
-    console.log(count);
     if (count === 0){
       $('#chats').append("<div>Start a Conversation!</div>");
     }
   },
-  NOT_TROLL: function(obj){
+  NOT_TROLL: function(obj){  //ESCAPING CODE
     if (obj.text.indexOf('<script>') > -1){
+      return false;
+    }
+    if (obj.username.indexOf('<script>') > -1){
       return false;
     }
     return true;
@@ -125,6 +131,23 @@ var app = {
   },
   handleSubmit: function(){
     console.log('triggered handleSubmit');
+    if (window.currentRoomname === null){
+      alert("Please select a room");
+      return false;
+    }
+    if ( $('#message').val() === '' ) {
+      alert('What do you want to message?')
+      return false;
+    }
+
+    var message = {
+      username: window.username,
+      text: $('#message').val(),
+      roomname: window.currentRoomname
+    };
+
+    app.send(message);
+    app.renderMessage(message);
   }
 };
 
