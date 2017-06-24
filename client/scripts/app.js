@@ -109,7 +109,7 @@ var app = {
   renderRoomMessages: function(roomname) {
     var count = 0;
     app.clearMessages();
-    for (let obj of window.data.results){
+    for (let obj of window.data.results) {
       if ( obj.roomname === roomname && obj.text !== undefined) {
         if ( obj.username !== undefined && app.NOT_TROLL(obj)) {
           if (obj.username === window.username) {
