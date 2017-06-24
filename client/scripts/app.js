@@ -29,7 +29,7 @@ window.currentRoomname = null;
 window.username = window.location.search.replace('?username=', '');
 
 var app = {
-  server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+  server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages?limit=1000&order=-createdAt',
   init: function(){
     // fetch data from server
     app.fetch();
@@ -37,10 +37,18 @@ var app = {
   processing: function(){
     //Get all the Room names in drop down
     var roomnamesObject = {};
+    roomnamesObject.roomnameSort = [];
     for(let obj of window.data.results){
-      roomnamesObject[obj.roomname] = true;
+      var key = String(obj.roomname).trim();
+      if (roomnamesObject.hasOwnProperty(key)){
+        roomnamesObject[key] = roomnamesObject[key] + 1;
+      }else{
+        roomnamesObject[key] = 1;
+        roomnamesObject.roomnameSort.push(key);
+      }
     }
-    for(let i of Object.keys(roomnamesObject)){
+    roomnamesObject.roomnameSort = roomnamesObject.roomnameSort.sort();
+    for(let i of roomnamesObject.roomnameSort){
       app.renderRoom(i);
     }
   },
@@ -70,10 +78,7 @@ var app = {
       contentType: 'application/json',
       success: function (data) {
         window.data = data;
-        app.processing();
-        console.log(data);
-        console.log(data.length);
-      },
+        app.processing();      },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
         console.error('chatterbox: Failed to send message', data);
@@ -83,12 +88,16 @@ var app = {
   clearMessages: function(){
     $('#chats').html('');
   },
-  renderMessage: function(message, who){
+  renderMessage: function(message, who, newMessage){
     var element = `<div class="chat ${who}">
                     <a href=# onclick="app.handleUsernameClick()" class="username ${who}">${message.username}</a>
                     <span class="talk-bubble round ${who}">${message.text}</span>
                   </div>`;
-    $('#chats').prepend(element);
+    if (newMessage !== undefined) {
+      $('#chats').prepend(element);
+    }else{
+      $('#chats').append(element);
+    }
   },
   renderRoom: function(roomname){
     var element = `<option value="${roomname}">
@@ -100,8 +109,8 @@ var app = {
     var count = 0;
     app.clearMessages();
     for(let obj of window.data.results){
-      if( obj.roomname === roomname ) {
-        if ( obj.username !== undefined && obj.text.length > 0 && app.NOT_TROLL(obj)){
+      if( obj.roomname === roomname && obj.text !== undefined) {
+        if ( obj.username !== undefined && app.NOT_TROLL(obj)){
           if(obj.username === window.username){
             app.renderMessage(obj);
             count++;
@@ -131,12 +140,13 @@ var app = {
   },
   handleSubmit: function(){
     console.log('triggered handleSubmit');
+    console.log(window.currentRoomname);
     if (window.currentRoomname === null){
       alert("Please select a room");
       return false;
     }
     if ( $('#message').val() === '' ) {
-      alert('What do you want to message?')
+      alert('What do you want to message?');
       return false;
     }
 
@@ -147,7 +157,7 @@ var app = {
     };
 
     app.send(message);
-    app.renderMessage(message);
+    app.renderMessage(message, 'me', 'newMessage');
   }
 };
 
