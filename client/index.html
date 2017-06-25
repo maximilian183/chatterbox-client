@@ -24,26 +24,39 @@
     <script src="scripts/app.js"></script>
   </head>
   <body>
-    <div id="main">
+    <section id="friends">
+      <h2>Friends</h2>
+      <div id="list"></div>
+    </section>
+    <section id="main">
       <div id="send">
         <h1>chatterbox</h1>
         <!-- Your HTML goes here! -->
 
         <!-- room selection dropdown -->
-        <div id="roomSelect">
+        <div>
           Room:
-          <select>
+          <select id="roomSelect">
             <option> Pick a room </option>
           </select>
+          <button onclick="app.createNewRoom()">Create New Room</button>
         </div>
 
         <!-- submission -->
         <form class="submit" onsubmit="return false">
-          <input id="message" name="message"></input>
+          <input id="message" name="message" placeholder="Type Message..."></input>
           <input type="submit" value="submit"></input>
         </form>
+
+        <!-- DM submission -->
+        <form class="dmSubmit" onsubmit="return false">
+          <input id="to" name="to" placeholder="User Name"></input>
+          <input id="dm" name="message" placeholder="Type DM Message..."></input>
+          <input type="submit" value="submit"></input>
+        </form>
+
       </div>
-    </div>
-    <div id="chats"></div>
+      <div id="chats"></div>
+    </section>
   </body>
 </html>

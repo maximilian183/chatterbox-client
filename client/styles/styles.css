@@ -5,7 +5,17 @@ body {
     font-family: arial, sans-serif;
 }
 
-#main, #chats {
+#friends {
+    float: left;
+    border: solid 1px #ddd;
+    background: white;
+    width: 200px;
+    text-align: left;
+    padding: 10px;
+    height:100vh;
+}
+#main {
+    float:left;
     width: 500px;
     margin: auto;
     text-align: left;
@@ -14,6 +24,18 @@ body {
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
     overflow: hidden;
+}
+
+#chats {
+    /*width: 500px;*/
+    margin: auto;
+    text-align: left;
+    background: white;
+    /*padding: 50px 60px;*/
+    /*border: solid #ddd;*/
+    border-width: 1px;
+    overflow: hidden;
+    height: 100vh;
 }
 
 #main h1 {
