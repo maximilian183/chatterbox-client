@@ -30,10 +30,10 @@ var app = {
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages?limit=1000&order=-createdAt',
   init: function() {
     // fetch data from server
+    app.fetch();
 
     // set setInterval to fetch function / execute per 10sec
-
-    setInterval(function(){app.fetch()},1000);
+    setInterval( function() { app.fetch(); } ,1000);
 
   },
   processing: function() {
@@ -57,8 +57,8 @@ var app = {
 
       //Creating Friendlist
       // check if type of JSON.parse() obj is true
-      if ( obj.roomname !== null && obj.roomname !== undefined ){
-        if ( obj.roomname[0] === '{'){
+      if ( obj.roomname !== null && obj.roomname !== undefined ) {
+        if ( obj.roomname[0] === '{') {
          // if yes, add roomname into friends object
           var friend = JSON.parse(obj.roomname);
           friends[friend.to] = true;
@@ -68,12 +68,16 @@ var app = {
 
     roomnamesObject.roomnameSort = roomnamesObject.roomnameSort.sort();
     //Need to reset room dropdown
-    $('#roomSelect').html('');
+    $('#roomSelect').html('<option value="default"> Pick a room </option>');
     for (let i of roomnamesObject.roomnameSort) {
       app.renderRoom(i);
     }
 
-    $("#roomSelect").val(window.currentRoomname);
+    if (window.currentRoomname !== null) {
+      $('#roomSelect').val(window.currentRoomname);
+    } else {
+      $('#roomSelect').val("default");
+    }
 
     //Need to reset friends list
     $('#list').html('');
@@ -127,7 +131,7 @@ var app = {
   },
   renderMessage: function(message, cssStyleforMe, newMessage) {
     var element = `<div class="chat ${cssStyleforMe}">
-                    <a href=# onclick="app.handleUsernameClick('${message.username}')" class="username ${cssStyleforMe}">${message.username}</a>
+                    <a href=# onclick="app.handleUsernameClick('${message.username}')" class="username ${cssStyleforMe}" data-toggle="modal" data-target="#exampleModal">${message.username}</a>
                     <span class="talk-bubble round ${cssStyleforMe}">${message.text}</span>
                   </div>`;
     if (newMessage !== undefined) {
@@ -150,10 +154,10 @@ var app = {
       // roonname: entered text
       // text: empty
       var message = {
-        username : window.username,
-        roomname : newRoomname,
-        text : ''
-      }
+        username: window.username,
+        roomname: newRoomname,
+        text: ''
+      };
     // use app.send method and pass the argument above
       app.send(message);
     // set #roomSelect & global var roomname to entered name
@@ -163,7 +167,7 @@ var app = {
     }
   },
   renderRoom: function(roomname) {
-    if ( roomname[0] !== '{') {
+    if ( roomname[0] !== '{' && roomname !== '') {
       var element = `<option value="${roomname}">
                       ${roomname}
                     </option>`;
@@ -201,17 +205,17 @@ var app = {
   },
   handleUsernameClick: function(username) {
     window.dmUsername = username;
-    $('#to').val(username);
+    $('#to').html(`To: <span class="talk-bubble round">${username}</span>`);
     return;
   },
-  handleFriends: function(username){
+  handleFriends: function(username) {
     app.handleUsernameClick(username);
 
     // stringify to/friend
     var directMessage = {
       to: username,
       friend: true
-    }
+    };
 
     // clear out displayed messages
     // pass it as argument into renderRoomMessages()
@@ -239,7 +243,7 @@ var app = {
     app.send(message);
     app.renderMessage(message, 'me', 'newMessage');
   },
-  sendDM: function(to, FRIEND){
+  sendDM: function(to, FRIEND) {
     if ( $('#dm').val() === '' ) {
       alert('What do you want to message?');
       return false;
@@ -248,7 +252,8 @@ var app = {
     var directMessage = {
       to: to,
       friend: FRIEND
-    }
+    };
+
     var message = {
       username: window.username,
       text: $('#dm').val(),

@@ -6,33 +6,32 @@ body {
 }
 
 #friends {
-    float: left;
-    border: solid 1px #ddd;
-    background: white;
-    width: 200px;
     text-align: left;
-    padding: 10px;
-    height:100vh;
-}
-#main {
-    float:left;
-    width: 500px;
-    margin: auto;
-    text-align: left;
-    background: white;
-    padding: 50px 60px;
-    border: solid #ddd;
-    border-width: 0 1px 1px 1px;
     overflow: hidden;
+    margin-bottom: .5rem;
+    border-radius: 1rem;
+    border: solid 1px lightgrey;
+}
+
+#send {
+    margin-bottom: 10px;
+}
+
+.tab-pane {
+    padding: 10px 0px;
+}
+
+#main {
+    text-align: left;
+    overflow: hidden;
+    margin-bottom: .5rem;
+    border-radius: .25rem;
 }
 
 #chats {
-    /*width: 500px;*/
     margin: auto;
     text-align: left;
     background: white;
-    /*padding: 50px 60px;*/
-    /*border: solid #ddd;*/
     border-width: 1px;
     overflow: hidden;
     height: 100vh;
@@ -70,9 +69,9 @@ body {
 }
 
 form {
-    padding: 20px;
+    /*padding: 20px;
     padding-left: 0;
-    margin-bottom: 20px;
+    margin-bottom: 20px;*/
 }
 
 form input[type=text] {
@@ -85,12 +84,10 @@ form input[type=text] {
 .chat {
     padding: 5px;
     margin-bottom: 5px;
-    background-color: #eee;
-    float:left;
 }
 
 .others {
-    float:right !important;
+    text-align: right;
 }
 
 .chat .username {
@@ -121,12 +118,13 @@ form input[type=text] {
     padding: 5px;
     display: inline-block;
     position: relative;
-    width: 200px;
+    min-width: 200px;
+    max-width: 400px;
     height: auto;
     background-color: lightblue;
 }
 .round{
-    border-radius: 30px;
-    -webkit-border-radius: 30px;
-    -moz-border-radius: 30px;
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
 }
